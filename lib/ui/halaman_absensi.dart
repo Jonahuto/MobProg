@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../model/absensi.dart';
-import '../service/absensi_service.dart';
-import 'absensi_form.dart';
+import '../model/karyawan.dart';
+import '../service/karyawan_service.dart';
 import '../widget/sidebar.dart';
 import 'absensi_item.dart';
 
@@ -12,8 +11,8 @@ class halaman_absensi extends StatefulWidget {
 }
 
 class _halaman_absensiState extends State<halaman_absensi> {
-  Stream<List<Absensi>> getList() async* {
-    List<Absensi> data = await AbsensiService().listData();
+  Stream<List<Karyawan>> getList() async* {
+    List<Karyawan> data = await KaryawanService().listData();
     yield data;
   }
 
@@ -23,15 +22,6 @@ class _halaman_absensiState extends State<halaman_absensi> {
       drawer: Sidebar(),
       appBar: AppBar(
         title: const Text("Data Absensi"),
-        actions: [
-          GestureDetector(
-            child: const Icon(Icons.add),
-            onTap: () {
-              Navigator.push(
-                context, MaterialPageRoute(builder:(context) => const AbsensiForm()));
-            },
-          )
-        ],
       ),
       body: StreamBuilder(
         stream: getList(),
@@ -51,7 +41,7 @@ class _halaman_absensiState extends State<halaman_absensi> {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, index){
-              return AbsensiItem(absensi: snapshot.data[index]);
+              return AbsensiItem(karyawan: snapshot.data[index]);
             },
           );
         },

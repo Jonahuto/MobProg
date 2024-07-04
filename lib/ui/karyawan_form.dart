@@ -1,7 +1,10 @@
+// ignore_for_file: unnecessary_new
+
 import 'package:crud_app2_edit/service/karyawan_service.dart';
 import 'package:flutter/material.dart';
 import 'karyawan_detail.dart';
 import '../model/karyawan.dart';
+import 'package:intl/intl.dart';
 
 class KaryawanForm extends StatefulWidget {
   const KaryawanForm({Key? key}) : super(key: key);
@@ -12,9 +15,10 @@ class _KaryawanFormState extends State<KaryawanForm> {
   
   final _formKey = GlobalKey<FormState>();
   final _namaCtrl = TextEditingController();
-  final _tanggalCtrl = TextEditingController();
-  final _jammasukCtrl = TextEditingController();
-  final _jamkeluarCtrl = TextEditingController();
+  final _nipCtrl = TextEditingController();
+  final _tgllahirCtrl = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,7 @@ class _KaryawanFormState extends State<KaryawanForm> {
         child: Form(
           key: _formKey,
           child: Column(
-            children: [_fieldNama(),_fieldTanggal(),_fieldJam_masuk(),_fieldJam_keluar(), SizedBox(height: 20), _tombolSimpan()],
+            children: [_fieldNama(),_fieldnip(),_fieldtgllahir(), SizedBox(height: 20), _tombolSimpan()],
           ),
         ),
       ),
@@ -36,29 +40,39 @@ class _KaryawanFormState extends State<KaryawanForm> {
       controller: _namaCtrl,
     );
   }
-  _fieldTanggal() {
+  _fieldnip() {
     return TextField(
-      decoration: const InputDecoration(labelText: "Tanggal"),
-      controller: _tanggalCtrl,
+      decoration: const InputDecoration(labelText: "NIP"),
+      controller: _nipCtrl,
     );
   }
-  _fieldJam_masuk() {
+  _fieldtgllahir() {
     return TextField(
-      decoration: const InputDecoration(labelText: "Jam Masuk"),
-      controller: _jammasukCtrl,
+      decoration: const InputDecoration(labelText: "Tanggal Lahir"),
+      controller: _tgllahirCtrl,
+      onTap: (){
+        _selectDate();
+      }
     );
   }
-  _fieldJam_keluar() {
-    return TextField(
-      decoration: const InputDecoration(labelText: "Jam Keluar"),
-      controller: _jamkeluarCtrl,
-    );
-  }
+    Future<void> _selectDate() async {
+        DateTime? _picked = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1000),
+          lastDate: DateTime(2100),
+        ); 
+        if (_picked != null) {
+          setState((){
+            _tgllahirCtrl.text = _picked.toString().split(" ")[0];
+          });
+        }
+      }
 
      _tombolSimpan() {
       return ElevatedButton(
         onPressed: () async {
-          Karyawan karyawan = new Karyawan(namaKaryawan: _namaCtrl.text,tanggal: _tanggalCtrl.text, jammasuk: _jammasukCtrl.text, jamkeluar: _jamkeluarCtrl.text);
+          Karyawan karyawan = new Karyawan(namaKaryawan: _namaCtrl.text, nip: _nipCtrl.text, tgllahir:_tgllahirCtrl.text,tanggal:"", jammasuk: "", jamkeluar: "");
           await KaryawanService().Simpan(karyawan).then((value) {
             Navigator.pushReplacement(
               context,

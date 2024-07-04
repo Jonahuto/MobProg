@@ -46,17 +46,12 @@ class _KaryawanDetailState extends State<KaryawanDetail> {
               ),
               SizedBox(height: 20),
               Text(
-                "Tanggal : ${snapshot.data.tanggal}",
+                "NIP : ${snapshot.data.nip}",
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(height: 20),
               Text(
-                "Jam Masuk : ${snapshot.data.jammasuk}",
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "Jam Keluar : ${snapshot.data.jamkeluar}",
+                "Tanggal Lahir : ${snapshot.data.tgllahir}",
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(height: 20),

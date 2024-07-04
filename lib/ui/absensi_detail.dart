@@ -1,32 +1,27 @@
-import 'package:crud_app2_edit/service/absensi_service.dart';
+import 'package:crud_app2_edit/service/karyawan_service.dart';
 import 'package:flutter/material.dart';
-import '../model/absensi.dart';
-import 'absensi_update_form.dart';
-import 'halaman_absensi.dart';
+import '../model/karyawan.dart';
 import 'package:intl/intl.dart';
 
 class AbsensiDetail extends StatefulWidget {
-  final Absensi absensi;
+  final Karyawan karyawan;
 
-  const AbsensiDetail({Key? key, required this.absensi}) : super(key: key);
+  const AbsensiDetail({Key? key, required this.karyawan}) : super(key: key);
   State<AbsensiDetail> createState() => _AbsensiDetailState();
 }
 
 class _AbsensiDetailState extends State<AbsensiDetail> {
-  
-  
-  Stream<Absensi> getData() async* {
-    Absensi data = await AbsensiService().getById(widget.absensi.id.toString());
+  Stream<Karyawan> getData() async* {
+    Karyawan data = await KaryawanService().getById(widget.karyawan.id.toString());
     yield data;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Detail Absensi")),
       body: StreamBuilder(
         stream: getData(),
-        
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
@@ -50,6 +45,11 @@ class _AbsensiDetailState extends State<AbsensiDetail> {
               ),
               SizedBox(height: 20),
               Text(
+                "Tanggal Lahir : ${snapshot.data.tgllahir}",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 20),
+              Text(
                 "Tanggal : ${snapshot.data.tanggal}",
                 style: TextStyle(fontSize: 20),
               ),
@@ -68,7 +68,8 @@ class _AbsensiDetailState extends State<AbsensiDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                 //_tombolUbah(),
-                //_tombolhome(), 
+                //_tombolhome(),
+                _tombolMasuk(), 
                 _tombolKeluar(),
                 //_tombolHapus()
                 ],
@@ -95,22 +96,44 @@ class _AbsensiDetailState extends State<AbsensiDetail> {
   //           style: ElevatedButton.styleFrom(backgroundColor: Colors.green, ),
   //           child: const Text("Ubah",style: TextStyle(color: Colors.white),)));
   // }
-   _tombolKeluar() {
-  DateTime now = DateTime.now();
-  String formattedTime = DateFormat('kk:mm:ss').format(now);
+
+  _tombolMasuk() {
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat('kk:mm:ss').format(now);
+    String formattedDate = DateFormat('d MMMM y').format(now);
     
       return ElevatedButton(
         onPressed: () async {
-          getData();
-          Absensi data = await AbsensiService().getById(widget.absensi.id.toString());
-          Absensi absensi = new Absensi(namaKaryawan: data.namaKaryawan,tanggal: data.tanggal,jammasuk: data.jammasuk,jamkeluar: formattedTime);
-          String id = widget.absensi.id.toString();
-          await AbsensiService().Ubah(absensi, id).then((value) {
+          
+          Karyawan data = await KaryawanService().getById(widget.karyawan.id.toString());
+          Karyawan karyawan = new Karyawan(namaKaryawan: data.namaKaryawan,nip: data.nip,tgllahir: data.tgllahir,tanggal: formattedDate,jammasuk: formattedTime,jamkeluar: data.jamkeluar);
+          String id = widget.karyawan.id.toString();
+          await KaryawanService().Ubah(karyawan, id).then((value) {
             Navigator.pop(context);
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AbsensiDetail(absensi: value)));
+                    builder: (context) => AbsensiDetail(karyawan: value)));
+          });
+        },
+        child: const Text("Absen Masuk"));
+  }
+   _tombolKeluar() {
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat('kk:mm:ss').format(now);
+    
+      return ElevatedButton(
+        onPressed: () async {
+          
+          Karyawan data = await KaryawanService().getById(widget.karyawan.id.toString());
+          Karyawan karyawan = new Karyawan(namaKaryawan: data.namaKaryawan,nip: data.nip,tgllahir: data.tgllahir,tanggal: data.tanggal,jammasuk: data.jammasuk,jamkeluar: formattedTime);
+          String id = widget.karyawan.id.toString();
+          await KaryawanService().Ubah(karyawan, id).then((value) {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AbsensiDetail(karyawan: value)));
           });
         },
         child: const Text("Absen Keluar"));

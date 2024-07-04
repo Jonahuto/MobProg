@@ -8,6 +8,11 @@ class LoginService {
       await UserInfo().setUserID("1");
       await UserInfo().setUsername("admin");
       isLogin = true;
+    }else if (username == 'karyawan' && password == '123') {
+      await UserInfo().setToken("Karyawan");
+      await UserInfo().setUserID("1");
+      await UserInfo().setUsername("karyawan");
+      isLogin = true;
     }
     return isLogin;
   }

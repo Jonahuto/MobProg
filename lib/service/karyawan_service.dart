@@ -35,4 +35,5 @@ class KaryawanService {
     Karyawan result = Karyawan.fromJson(response.data);
     return result;
   }
+    
 }   

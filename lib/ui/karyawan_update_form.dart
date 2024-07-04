@@ -2,6 +2,7 @@ import "package:crud_app2_edit/service/karyawan_service.dart";
 import "package:flutter/material.dart";
 import "../model/karyawan.dart";
 import 'karyawan_detail.dart';
+import 'package:intl/intl.dart';
 
 class KaryawanUpdateForm extends StatefulWidget {
   final Karyawan karyawan;
@@ -13,17 +14,23 @@ class KaryawanUpdateForm extends StatefulWidget {
 class _KaryawanUpdateFormState extends State<KaryawanUpdateForm> {
   final _formKey = GlobalKey<FormState>();
   final _namaCtrl = TextEditingController();
+  final _nipCtrl = TextEditingController();
+  TextEditingController _tgllahirCtrl = TextEditingController();
   final _tanggalCtrl = TextEditingController();
-  final _jammasukCtrl = TextEditingController();
-  final _jamkeluarCtrl = TextEditingController();
+  final _jam_masukCtrl = TextEditingController();
+  final _jam_keluarCtrl = TextEditingController();
 
   Future<Karyawan> getData() async {
     Karyawan data = await KaryawanService().getById(widget.karyawan.id.toString());
     setState(() {
       _namaCtrl.text = data.namaKaryawan;
+      _nipCtrl.text = data.nip;
+      _tgllahirCtrl.text = data.tgllahir;
       _tanggalCtrl.text = data.tanggal;
-      _jammasukCtrl.text = data.jammasuk;
-      _jamkeluarCtrl.text = data.jamkeluar;
+      _jam_masukCtrl.text = data.jammasuk;
+      _jam_keluarCtrl.text = data.jamkeluar;
+      
+      
     });
     return data;
   }
@@ -43,7 +50,7 @@ class _KaryawanUpdateFormState extends State<KaryawanUpdateForm> {
           key: _formKey,
           child: Column(
             children: 
-            [_fieldNama(),_fieldTanggal(),_fieldJam_masuk(),_fieldJam_keluar(),SizedBox(height: 20), _tombolSimpan()],
+            [_fieldNama(),_fieldnip(),_fieldtgllahir(),SizedBox(height: 20), _tombolSimpan()],
             
           ),
         ),
@@ -57,29 +64,36 @@ class _KaryawanUpdateFormState extends State<KaryawanUpdateForm> {
       controller: _namaCtrl,
     );
   }
-  _fieldTanggal() {
+  _fieldnip() {
     return TextField(
-      decoration: const InputDecoration(labelText: "Tanggal"),
-      controller: _tanggalCtrl,
+      decoration: const InputDecoration(labelText: "NIP"),
+      controller: _nipCtrl,
     );
   }
-  _fieldJam_masuk() {
+  _fieldtgllahir() {
     return TextField(
-      decoration: const InputDecoration(labelText: "Jam Masuk"),
-      controller: _jammasukCtrl,
+      decoration: const InputDecoration(labelText: "Tanggal Lahir"),
+      controller: _tgllahirCtrl,
+      onTap: (){
+        _selectDate();
+      }
     );
   }
-  _fieldJam_keluar() {
-    return TextField(
-      decoration: const InputDecoration(labelText: "Jam Keluar"),
-      controller: _jamkeluarCtrl,
+  Future<void> _selectDate() async {
+    await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1000),
+      lastDate: DateTime(2100),
     );
   }
+
 
   _tombolSimpan() {
     return ElevatedButton(
         onPressed: () async {
-          Karyawan karyawan = new Karyawan(namaKaryawan: _namaCtrl.text,tanggal: _tanggalCtrl.text,jammasuk: _jammasukCtrl.text,jamkeluar: _jamkeluarCtrl.text);
+          getData();
+          Karyawan karyawan = new Karyawan(namaKaryawan: _namaCtrl.text,nip: _nipCtrl.text,tgllahir: _tgllahirCtrl.text,tanggal: _tanggalCtrl.text,jammasuk: _jam_masukCtrl.text,jamkeluar: _jam_keluarCtrl.text);
           String id = widget.karyawan.id.toString();
           await KaryawanService().Ubah(karyawan, id).then((value) {
             Navigator.pop(context);
